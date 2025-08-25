@@ -339,5 +339,21 @@ namespace PlanPaymentPage.Controllers
                 });
             }
         }
+        [HttpGet("TestApi")]
+        public async Task<IActionResult> TestApi()
+        {
+            try
+            {       return Content("Api is Working");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    ResultStatus = "Error",
+                    ResultMessage = ex.Message,
+                    ResultCode = (int)HttpStatusCode.InternalServerError
+                });
+            }
+        }
     }
 }
