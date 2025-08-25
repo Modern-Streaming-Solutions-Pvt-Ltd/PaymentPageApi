@@ -6,15 +6,15 @@ phases:
   pre_build:
     commands:
       - echo Restore started on `date`
-      - dotnet restore PaymentPageApi.csproj
+      - dotnet restore PlanPaymentPage.csproj
   build:
     commands:
       - echo Build started on `date`
-      - dotnet publish -c release --no-restore -o ./PaymentPageApi/build_output PaymentPageApi.csproj /p:EnvironmentName=Production
+      - dotnet publish -c release --no-restore -o ./PlanPaymentPage/build_output PlanPaymentPage.csproj /p:EnvironmentName=Production
       - 'pwd'
 artifacts:
   files: 
-    - PaymentPageApi/**/*
+    - PlanPaymentPage/**/*
     - scripts/**/*
     - appspec.yml
 # - 'dir ./build-output'

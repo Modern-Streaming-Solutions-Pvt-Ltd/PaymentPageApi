@@ -1,7 +1,7 @@
 version: 0.0
 os: windows
 files:
-  - source: PaymentPageApi\build_output
+  - source: PlanPaymentPage\build_output
     destination: C:\Domains\planofferapi.watcho.com\build_output
   - source: scripts
     destination: C:\Domains\planofferapi.watcho.com\scripts
