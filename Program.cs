@@ -1,28 +1,26 @@
-﻿//using Microsoft.AspNetCore.Authentication.JwtBearer;
-//using Microsoft.IdentityModel.Tokens;
-//using System.Text;
-//using PlanPaymentPage.Middleware;
+﻿using PlanPaymentPage.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-//using Prometheus;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
 using PlanPaymentPage.Contracts;
 using PlanPaymentPage.Repository;
 using System.Text;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// ----------------- Services -----------------
 
-// Add services to the container.
-builder.Services.AddHttpContextAccessor();
+// Controllers
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-// Register the repository
+
+// HttpContext Accessor
+builder.Services.AddHttpContextAccessor();
+
+// Repository
 builder.Services.AddScoped<IPlanOfferRepository, PlanOfferRepository>();
 
-// Add JWT Authentication
+// JWT Authentication
 var secretKey = builder.Configuration.GetSection("JwtSecretKey").Value;
 var key = Encoding.ASCII.GetBytes(secretKey);
 
@@ -38,11 +36,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-
+// CORS Policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// ----------------- Middleware Pipeline -----------------
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -51,6 +59,16 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// ✅ Enable CORS before authentication/authorization
+app.UseCors("AllowAll");
+
+// ✅ Authentication (JWT)
+app.UseAuthentication();
+
+// ✅ Custom API Key Middleware
+app.UseMiddleware<ApiKeyMiddleware>();
+
+// ✅ Authorization
 app.UseAuthorization();
 
 app.MapControllers();

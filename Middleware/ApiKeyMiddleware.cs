@@ -1,18 +1,6 @@
-﻿//namespace PlanPaymentPage.Middleware
-//{
-//    public class ApiKeyMiddleware
-//    {
-//    }
-//}
-
-
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Security.Principal;
 
 namespace PlanPaymentPage.Middleware
 {
@@ -20,56 +8,49 @@ namespace PlanPaymentPage.Middleware
     {
         private readonly RequestDelegate _next;
         private const string APIKEYNAME = "ApiKey";
-        private string[] byPassPaths = { };
+        private readonly string[] byPassPaths = {"/PlanOffer/TestApi" };
         private readonly IConfiguration _configuration;
-
-        //SaveJobWebhhookLogs
-
 
         public ApiKeyMiddleware(RequestDelegate next, IConfiguration configuration)
         {
             _next = next;
             _configuration = configuration;
         }
+
         public async Task InvokeAsync(HttpContext context)
         {
-            context.Response.Headers.Add("Access-Control-Allow-Origin", new[] { "*" });
-            context.Response.Headers.Add("Access-Control-Allow-Headers", new[] { "*" });
-            context.Response.Headers.Add("Access-Control-Allow-Methods", new[] { "GET, POST, PUT, DELETE, OPTIONS" });
-            context.Response.Headers.Add("Access-Control-Allow-Credentials", new[] { "true" });
-            if (context.Request.Method == "OPTIONS")
+            // Handle preflight requests
+            if (context.Request.Method == HttpMethods.Options)
             {
-
-                context.Response.StatusCode = 200;
-                return;// context.Response.WriteAsync("OK");
+                context.Response.StatusCode = StatusCodes.Status200OK;
+                return;
             }
-            if (context.Request.Path != null && byPassPaths.Any(context.Request.Path.Value.Contains))
+
+            // Skip API key check for bypass paths
+            if (byPassPaths.Any(path => context.Request.Path.StartsWithSegments(path)))
             {
-                //Console.WriteLine(context.Request.Path);
                 await _next(context);
+                return;
             }
-            else
+
+            // Check API key
+            if (!context.Request.Headers.TryGetValue(APIKEYNAME, out var extractedApiKey))
             {
-
-                if (!context.Request.Headers.TryGetValue(APIKEYNAME, out var extractedApiKey))
-                {
-                    context.Response.StatusCode = 401;
-                    await context.Response.WriteAsync("Api Key was not provided.");
-                    return;
-                }
-
-                var appSettings = context.RequestServices.GetRequiredService<IConfiguration>();
-
-                var apiKey = appSettings.GetValue<string>(APIKEYNAME);
-
-                if (!apiKey.Equals(extractedApiKey))
-                {
-                    context.Response.StatusCode = 401;
-                    await context.Response.WriteAsync("Unauthorized client.");
-                    return;
-                }
-                await _next(context);
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                await context.Response.WriteAsync("API Key was not provided.");
+                return;
             }
+
+            var apiKey = _configuration.GetValue<string>(APIKEYNAME);
+
+            if (string.IsNullOrEmpty(apiKey) || !apiKey.Equals(extractedApiKey))
+            {
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                await context.Response.WriteAsync("Unauthorized client.");
+                return;
+            }
+
+            await _next(context);
         }
     }
 }
