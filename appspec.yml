@@ -1,0 +1,21 @@
+version: 0.0
+os: windows
+files:
+  - source: PaymentPageApi\build_output
+    destination: C:\Domains\planofferapi.watcho.com\build_output
+  - source: scripts
+    destination: C:\Domains\planofferapi.watcho.com\scripts
+hooks:
+  ApplicationStop:
+    - location: scripts\BeforeInstall.ps1
+      timeout: 800
+  BeforeInstall:
+    - location: scripts\BeforeInstall.ps1
+      timeout: 800
+  ApplicationStart:
+    - location: scripts\InstallApp.ps1
+      timeout: 800
+# Install:
+#    - location: scripts\BeforeInstall.ps1
+#      timeout: 100
+ 

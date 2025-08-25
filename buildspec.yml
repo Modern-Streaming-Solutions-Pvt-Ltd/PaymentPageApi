@@ -1,0 +1,20 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      dotnet: 8.0
+  pre_build:
+    commands:
+      - echo Restore started on `date`
+      - dotnet restore PaymentPageApi.csproj
+  build:
+    commands:
+      - echo Build started on `date`
+      - dotnet publish -c release --no-restore -o ./PaymentPageApi/build_output PaymentPageApi.csproj /p:EnvironmentName=Production
+      - 'pwd'
+artifacts:
+  files: 
+    - PaymentPageApi/**/*
+    - scripts/**/*
+    - appspec.yml
+# - 'dir ./build-output' 
