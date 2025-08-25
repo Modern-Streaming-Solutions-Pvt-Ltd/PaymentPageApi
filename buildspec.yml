@@ -17,4 +17,4 @@ artifacts:
     - PaymentPageApi/**/*
     - scripts/**/*
     - appspec.yml
-# - 'dir ./build-output' 
+# - 'dir ./build-output'
