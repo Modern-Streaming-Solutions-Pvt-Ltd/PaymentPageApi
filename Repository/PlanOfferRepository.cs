@@ -378,7 +378,7 @@ namespace PlanPaymentPage.Repository
                 //    return "APP";  // fallback for mobile app or no UA
                 //var parser = Parser.GetDefault();
                 //ClientInfo clientInfo = parser.Parse(userAgent);
-                model.BrowserDetails = model.BrowserDetails + " || " + userAgent;
+               ///model.BrowserDetails = model.BrowserDetails + " || " + userAgent;
                 var data = new
                 {
 
@@ -397,12 +397,7 @@ namespace PlanPaymentPage.Repository
                     SubcriptionMode = model.SubcriptionMode,
                     RequestMode = model.RequestMode,
                     TransactionType = model.TransactionType,
-                    AutoRenewalStatus = model.AutoRenewalStatus,
-                    //Iscouponvalidated = model.Iscouponvalidated,
-                    //IsWalletBalanceisUsed = model.IsWalletBalanceisUsed,
-                    //DiscountType = model.DiscountType,
-                    //DTHBalanceAmount = model.DTHBalanceAmount,
-                    //SubscriptionParam = model.SubscriptionParam,
+                    AutoRenewalStatus = model.AutoRenewalStatus,                    
                     SubsPGRequest = model.SubsPGRequest,
                     PromoCodeScratchCardNo = model.PromoCodeScratchCardNo,
                     Remarks = model.Remarks,
