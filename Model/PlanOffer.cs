@@ -39,6 +39,7 @@ namespace PlanPaymentPage.Model
         public int? CountryCode { get; set; }
         public string? Source { get; set; }
         public string? ProcessType { get; set; }
+        public string? BrowserDetail { get; set; }  
         public string? AuthToken { get; set; }
 
     }
@@ -142,6 +143,19 @@ namespace PlanPaymentPage.Model
         public string PromoCodeScratchCardNo { get; set; }
         public string? Remarks { get; set; }
         public string BrowserDetails { get; set; }
+        public string? AuthToken { get; set; }
+    }
+
+    public class CancelSubscriptionRequest
+    {
+        public string MobileNo { get; set; }
+        public string Source { get; set; }
+        public string PGMode { get; set; }
+        public string PGSubscriptionID { get; set; }
+        public string PlanType { get; set; }
+        public string SubscriptionPlanCode { get; set; }
+        public int OTTSMSID { get; set; }
+        public string ReturnUrl { get; set; }
         public string? AuthToken { get; set; }
     }
 

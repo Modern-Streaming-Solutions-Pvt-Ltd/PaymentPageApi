@@ -23,5 +23,8 @@ namespace PlanPaymentPage.Contracts
         Task<string> FetchPaymentFeedback(PlanValidateOtpModel model);
         Task<string> TransactionAcknowledgment(TransactionAcknowledgmentRequest model);
         Task<string> GenerateSubscriptionRequest(GenerateSubscriptionRequestModel model);
+        Task<string> ValidationToken(PlanValidateOtpModel model);
+        Task<string> CancelSubscription(CancelSubscriptionRequest model);
+        Task<string> GetAvailableCouponDetailsForSubscriber(PlanValidateOtpModel model);
     }
 }

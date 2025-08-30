@@ -422,6 +422,113 @@ namespace PlanPaymentPage.Repository
                 return JsonConvert.SerializeObject(errorResponse);
             }
         }
+        public async Task<string> ValidationToken(PlanValidateOtpModel model)
+        {
+            try
+            {
+                var ipAddress = _httpContextAccessor?.HttpContext?.Request?.Headers["X-Forwarded-For"].FirstOrDefault()
+                    ?? _httpContextAccessor?.HttpContext?.Connection?.RemoteIpAddress?.ToString() ?? "";
+                var userAgent = _httpContextAccessor?.HttpContext?.Request?.Headers["User-Agent"].ToString() ?? "APP";
+                var data = new
+                {
+
+                    MobileNo = model.MobileNo,
+                    OTTSMSID = model.OTTSMSID,
+                    Source = model.Source,
+                    BrowserDetail=model.BrowserDetail,
+                    AuthToken=model.AuthToken
+                };
+
+                string json = JsonConvert.SerializeObject(data);
+                string encryptedData = EncryptString(json, _configuration["Secretkey"], _configuration["EncKey"]);
+                var responseContent = await GenerateVerificationCodeForLoginAsync(encryptedData, _configuration, "ValidationToken", model.AuthToken);
+                string decryptedResponse = DecryptString(responseContent, _configuration["Secretkey"], _configuration["EncKey"]);
+
+                return decryptedResponse;
+            }
+            catch (Exception ex)
+            {
+                var errorResponse = new
+                {
+                    ResultStatus = "Error",
+                    ResultMessage = ex.Message,
+                    ResultCode = (int)HttpStatusCode.InternalServerError
+                };
+                return JsonConvert.SerializeObject(errorResponse);
+            }
+        }
+        public async Task<string> CancelSubscription(CancelSubscriptionRequest model)
+        {
+            try
+            {
+                var ipAddress = _httpContextAccessor?.HttpContext?.Request?.Headers["X-Forwarded-For"].FirstOrDefault()
+                    ?? _httpContextAccessor?.HttpContext?.Connection?.RemoteIpAddress?.ToString() ?? "";
+                var userAgent = _httpContextAccessor?.HttpContext?.Request?.Headers["User-Agent"].ToString() ?? "APP";
+                var data = new
+                {
+                    MobileNo = model.MobileNo,
+                    Source = model.Source,
+                    PGMode = model.PGMode,
+                    PGSubscriptionID = model.PGSubscriptionID,
+                    PlanType = model.PlanType,
+                    SubscriptionPlanCode = model.SubscriptionPlanCode,
+                    OTTSMSID = model.OTTSMSID,
+                    ReturnUrl = model.ReturnUrl
+                };
+
+
+                string json = JsonConvert.SerializeObject(data);
+                string encryptedData = EncryptString(json, _configuration["Secretkey"], _configuration["EncKey"]);
+                var responseContent = await GenerateVerificationCodeForLoginAsync(encryptedData, _configuration, "CancelSubscription",model.AuthToken);
+                string decryptedResponse = DecryptString(responseContent, _configuration["Secretkey"], _configuration["EncKey"]);
+
+                return decryptedResponse;
+            }
+            catch (Exception ex)
+            {
+                var errorResponse = new
+                {
+                    ResultStatus = "Error",
+                    ResultMessage = ex.Message,
+                    ResultCode = (int)HttpStatusCode.InternalServerError
+                };
+                return JsonConvert.SerializeObject(errorResponse);
+            }
+        }
+
+        public async Task<string> GetAvailableCouponDetailsForSubscriber(PlanValidateOtpModel model)
+        {
+            try
+            {
+                var ipAddress = _httpContextAccessor?.HttpContext?.Request?.Headers["X-Forwarded-For"].FirstOrDefault()
+                    ?? _httpContextAccessor?.HttpContext?.Connection?.RemoteIpAddress?.ToString() ?? "";
+                var userAgent = _httpContextAccessor?.HttpContext?.Request?.Headers["User-Agent"].ToString() ?? "APP";
+                var data = new
+                {
+                    MobileNo = model.MobileNo,
+                    Source = model.Source,
+                    OTTSMSID = model.OTTSMSID                 
+                };
+
+
+                string json = JsonConvert.SerializeObject(data);
+                string encryptedData = EncryptString(json, _configuration["Secretkey"], _configuration["EncKey"]);
+                var responseContent = await GenerateVerificationCodeForLoginAsync(encryptedData, _configuration, "GetAvailableCouponDetailsForSubscriber",model.AuthToken);
+                string decryptedResponse = DecryptString(responseContent, _configuration["Secretkey"], _configuration["EncKey"]);
+
+                return decryptedResponse;
+            }
+            catch (Exception ex)
+            {
+                var errorResponse = new
+                {
+                    ResultStatus = "Error",
+                    ResultMessage = ex.Message,
+                    ResultCode = (int)HttpStatusCode.InternalServerError
+                };
+                return JsonConvert.SerializeObject(errorResponse);
+            }
+        }
         public static async Task<string> GenerateVerificationCodeForLoginAsync(string inputParam, IConfiguration configuration, string ApiUrl, String Authtoken = null)
         {
             string _ClientKey = configuration["_ClientKey"].ToString();

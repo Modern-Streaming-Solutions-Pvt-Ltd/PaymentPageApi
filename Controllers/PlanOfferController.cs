@@ -339,6 +339,100 @@ namespace PlanPaymentPage.Controllers
                 });
             }
         }
+        [HttpPost("ValidationToken")]
+        public async Task<IActionResult> ValidationToken(PlanValidateOtpModel model)
+        {
+            try
+            {
+                var encryptedResponse = await _planofferRepository.ValidationToken(model);
+
+                if (!string.IsNullOrEmpty(encryptedResponse))
+                {
+                    return Content(encryptedResponse, "application/json");
+                }
+                else
+                {
+                    return NotFound(new
+                    {
+                        ResultStatus = "Failed",
+                        ResultMessage = "data not found.",
+                        ResultCode = (int)HttpStatusCode.NotFound
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    ResultStatus = "Error",
+                    ResultMessage = ex.Message,
+                    ResultCode = (int)HttpStatusCode.InternalServerError
+                });
+            }
+        }
+
+        [HttpPost("CancelSubscription")]
+        public async Task<IActionResult> CancelSubscription(CancelSubscriptionRequest model)
+        {
+            try
+            {
+                var encryptedResponse = await _planofferRepository.CancelSubscription(model);
+
+                if (!string.IsNullOrEmpty(encryptedResponse))
+                {
+                    return Content(encryptedResponse, "application/json");
+                }
+                else
+                {
+                    return NotFound(new
+                    {
+                        ResultStatus = "Failed",
+                        ResultMessage = "data not found.",
+                        ResultCode = (int)HttpStatusCode.NotFound
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    ResultStatus = "Error",
+                    ResultMessage = ex.Message,
+                    ResultCode = (int)HttpStatusCode.InternalServerError
+                });
+            }
+        }
+        [HttpPost("GetAvailableCouponDetailsForSubscriber")]
+        public async Task<IActionResult> GetAvailableCouponDetailsForSubscriber(PlanValidateOtpModel model)
+        {
+            try
+            {
+                var encryptedResponse = await _planofferRepository.GetAvailableCouponDetailsForSubscriber(model);
+
+                if (!string.IsNullOrEmpty(encryptedResponse))
+                {
+                    return Content(encryptedResponse, "application/json");
+                }
+                else
+                {
+                    return NotFound(new
+                    {
+                        ResultStatus = "Failed",
+                        ResultMessage = "data not found.",
+                        ResultCode = (int)HttpStatusCode.NotFound
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    ResultStatus = "Error",
+                    ResultMessage = ex.Message,
+                    ResultCode = (int)HttpStatusCode.InternalServerError
+                });
+            }
+        }
         [HttpGet("TestApi")]
         public async Task<IActionResult> TestApi()
         {
